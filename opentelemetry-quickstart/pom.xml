@@ -53,9 +53,9 @@
       <artifactId>quarkus-observability-devservices-lgtm</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkiverse.micrometer.registry</groupId>
-      <artifactId>quarkus-micrometer-registry-otlp</artifactId>
-      <version>3.2.4</version>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
+      <version>3.9.5</version>
     </dependency>
   </dependencies>
   <build>

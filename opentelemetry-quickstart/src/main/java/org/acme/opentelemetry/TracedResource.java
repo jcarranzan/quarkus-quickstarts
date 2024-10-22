@@ -1,8 +1,8 @@
 package org.acme.opentelemetry;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.metrics.Meter;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -24,18 +24,18 @@ public class TracedResource {
     @Context
     UriInfo uriInfo;
 
-    @Inject
-    MeterRegistry registry;
+    private Meter meter;
 
     private AtomicDouble xValue = new AtomicDouble(0.0);
 
     @PostConstruct
     public void init() {
-        Gauge.builder("service.xvalue", xValue, AtomicDouble::get)
-                .baseUnit("units")
-                .description("Current value of X in the service")
-                .tag("service", "TracedResource")
-                .register(registry);
+       meter = GlobalOpenTelemetry.getMeter("myservice");
+
+        meter.gaugeBuilder("service.xvalue")
+                .setDescription("Current value of X in the service")
+                .setUnit("units")
+                .buildWithCallback(measurement -> measurement.record(xValue.get()));
     }
 
     @GET
